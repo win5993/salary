@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> 직원별 급여 자동 계산기 </title>
-        <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>직원별 급여 자동 계산기</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         /* ------------------ CSS 스타일링 (최종) ------------------ */
         :root {
@@ -228,7 +228,9 @@
     </style>
 </head>
 <body>
-    <h1>✅ 직원별 & 종합 급여 자동 계산기 (FINAL)</h1> <div class="tabs">
+    <h1>✅ 직원별 & 종합 급여 자동 계산기 (FINAL)</h1> 
+
+    <div class="tabs">
         <button class="tab-button summary-tab" onclick="showSummary()">종합 요약</button>
         <button class="tab-button settings-tab" onclick="showSettings()">설정</button>
         <button class="tab-button" onclick="changeEmployee('이효성')">이효성</button>
@@ -424,7 +426,7 @@
             employeeData = {};
             calculatedResults = {};
 
-            // 1. 초기 데이터 구조 생성
+            // 1. 초기 데이터 구조 생성 (GitHub Pages에서 로컬스토리지가 비어있어도 구조를 만듦)
             EMPLOYEES.forEach(name => {
                 employeeData[name] = {};
                 calculatedResults[name] = {};
@@ -456,11 +458,7 @@
                 } catch (e) {
                     console.error(year + "년 데이터 로드 중 오류 발생:", e);
                 }
-            } 
-            
-            // 3. GitHub Pages 등에서 localStorage가 비어있을 때 빈 캘린더를 표시하기 위해, 
-            //    1번 단계에서 이미 전체 구조를 만들었으므로 별도의 추가 로직이 필요 없음. 
-            //    (기존 코드의 구조 생성 로직이 이 문제를 해결함)
+            }
         }
         
         // --- MODAL FUNCTIONS ---
@@ -477,6 +475,7 @@
         // --- DATA SAVE FUNCTION (Modified) ---
         function saveData() {
             try {
+                // 데이터 저장 자체는 localStorage를 사용하므로 GitHub Pages에서도 작동함 (접속한 브라우저에 저장됨)
                 localStorage.setItem(EMPLOYEE_DATA_KEY_PREFIX + currentYear, JSON.stringify(employeeData));
                 localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify(yearlyRates));
 
@@ -823,6 +822,3 @@
     </script>
 </body>
 </html>
-
-
-
