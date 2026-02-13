@@ -6,7 +6,7 @@
     <title>직원별 급여 자동 계산기</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        /* ------------------ CSS 스타일링 (최종) ------------------ */
+        /* ------------------ CSS 스타일링 ------------------ */
         :root {
             --primary-color: #0d9488;
             --secondary-color: #f0fdfa;
@@ -44,11 +44,11 @@
         #output-area { width: 40%; }
         
         /* 탭 스타일 */
-        .tabs { display: flex; margin-bottom: 20px; border-bottom: 3px solid var(--border-color); }
+        .tabs { display: flex; margin-bottom: 20px; border-bottom: 3px solid var(--border-color); flex-wrap: wrap; }
         .tab-button {
             padding: 12px 20px; cursor: pointer; border: none; background-color: #f8fafc;
             color: #475569; font-weight: 600; font-size: 16px; border-top-left-radius: 8px;
-            border-top-right-radius: 8px; transition: all 0.2s; margin-right: 5px;
+            border-top-right-radius: 8px; transition: all 0.2s; margin-right: 5px; margin-bottom: 5px;
         }
         .tab-button.active {
             background-color: #ffffff; color: var(--primary-color); border: 3px solid var(--border-color); border-bottom: none;
@@ -67,210 +67,45 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* 달력 테이블 스타일 유지 */
-        #time-input-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; }
-        #time-input-table th, #time-input-table td { padding: 8px 4px; border: 1px solid var(--border-color); }
+        /* 테이블 공통 */
+        table { width: 100%; border-collapse: collapse; text-align: center; }
+        th, td { padding: 8px 4px; border: 1px solid var(--border-color); }
+        
+        /* 달력 테이블 */
+        #time-input-table { font-size: 14px; }
         .day-label { width: 10%; font-weight: 600; }
         .day-label.sun { color: var(--weekend-color-sun); }
         .day-label.sat { color: var(--weekend-color-sat); }
-        #time-input-table td:first-child, #time-input-table td:nth-child(2) { width: 10%; }
         #time-input-table input { width: 90%; padding: 4px; border: 1px solid #cbd5e1; border-radius: 4px; text-align: center; font-size: 13px; }
 
-        /* 설정 테이블 스타일 유지 */
-        #settings-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 16px; }
-        #settings-table th, #settings-table td { padding: 12px 15px; border: 1px solid var(--border-color); text-align: left; }
+        /* 설정 테이블 */
         #settings-table th { background-color: var(--secondary-color); font-weight: 700; }
         #settings-table input { width: 90%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 16px; text-align: right;}
-        #settings-table td:nth-child(3) { font-weight: 800; color: var(--primary-color); text-align: right; }
-        
-        /* ------------------ A. 종합 요약 테이블 스타일 (캡처 1 반영) ------------------ */
-        #summary-view-content .input-header { 
-            justify-content: flex-end; 
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        #summary-view-content .title-display { 
-            font-size: 1.3em;
-            font-weight: 800;
-            color: var(--primary-color);
-            margin-top: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed var(--border-color);
-        }
-        #summary-data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 16px;
-            margin-top: 15px;
-        }
-        #summary-data-table th, #summary-data-table td {
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
-        #summary-data-table thead th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 700;
-        }
-        #summary-data-table tbody tr:last-child {
-            font-weight: 900;
-            background-color: var(--total-sum-bg);
-            color: var(--total-sum-color);
-            border-top: 3px solid var(--total-sum-color);
-            font-size: 1.1em;
-        }
 
-        /* ------------------ B. 직원 상세 명세표 (캡처 2 반영) ------------------ */
-        #employee-detail-view h2 {
-            font-weight: 800; color: var(--header-color); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;
-        }
-        .employee-info {
-            font-size: 1.5em; font-weight: 800; color: var(--primary-color); margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed var(--border-color);
-        }
-        #detail-pay-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        #detail-pay-table th, #detail-pay-table td {
-            padding: 10px 15px;
-            border: 1px solid var(--border-color);
-            font-size: 15px;
-        }
-        #detail-pay-table th {
-            background-color: var(--pay-box-bg);
-            font-weight: 600;
-            width: 40%;
-        }
-        #detail-pay-table td {
-            text-align: right;
-            font-weight: 700;
-            color: var(--header-color);
-        }
-        .summary-box {
-            background-color: #f0fdfa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-        }
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-        .summary-row span:last-child {
-            font-weight: 900;
-            color: var(--primary-color);
-        }
-        .total-pay-row th, .total-pay-row td {
-            background-color: #ccfbf1 !important;
-            font-weight: 900 !important;
-            color: #0f766e !important;
-            font-size: 1.1em;
-        }
+        /* 직원 관리 UI */
+        .management-section { margin-top: 30px; padding-top: 20px; border-top: 2px dashed var(--border-color); }
+        .staff-list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #f1f5f9; }
+        .delete-btn { background-color: #fee2e2; color: #ef4444; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .add-staff-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .add-staff-group input { flex-grow: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; }
 
-        /* ------------------ C. 모달 스타일 추가 ------------------ */
-        .modal {
-            display: none; /* 기본적으로 숨김 */
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4); /* 배경 어둡게 처리 */
-            justify-content: center;
-            align-items: center;
-        }
+        /* 종합 요약 테이블 */
+        #summary-data-table thead th { background-color: var(--primary-color); color: white; }
+        #summary-data-table tbody tr:last-child { font-weight: 900; background-color: var(--total-sum-bg); color: var(--total-sum-color); border-top: 3px solid var(--total-sum-color); }
 
-        .modal-content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-        }
-
-        .modal-content h3 {
-            color: var(--primary-color);
-            font-size: 1.2em;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        
-        .modal-content p {
-            font-size: 1.0em;
-            color: var(--header-color);
-            margin-bottom: 25px;
-        }
-
-        .modal-button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-
-        .modal-button:hover {
-            background-color: #07796d;
-        }
-
-/* ------------------ Z. 데이터 저장 버튼 스타일 (기존 추가 부분) ------------------ */
-
-    #save-button {
-        /* 현재 이미지와 달리 눈에 띄는 스타일로 변경 */
-        background-color: #f97316; /* 주황색 */
-        color: #ffffff;
-        border: none;
-        border-radius: 20px; /* 둥근 모양 */
-        padding: 12px 30px; /* 패딩 증가 */
-        font-size: 1.0em; /* 글꼴 크기 증가 */
-        font-weight: 800;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    #save-button:hover {
-        background-color: #ea580c; /* 호버 시 진하게 */
-        transform: translateY(-1px); /* 살짝 떠오르는 효과 */
-        box-shadow: 0 6px 10px rgba(249, 115, 22, 0.4);
-    }
-/* -------------------------------------------------------------------------- */
-
-/* ------------------ (새로 추가) 종합 요약 시 전체 폭 스타일 ------------------ */
-/* main-container에 summary-active-layout 클래스가 있을 때 */
-.main-container.summary-active-layout #input-area {
-    width: 100%; /* 좌측 영역을 전체 너비로 확장 */
-}
-.main-container.summary-active-layout #output-area {
-    display: none; /* 우측 영역 숨김 */
-}
-/* -------------------------------------------------------------------------- */
-
-
+        /* 모달 및 기타 */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); justify-content: center; align-items: center; }
+        .modal-content { background-color: #fff; padding: 30px; border-radius: 10px; width: 90%; max-width: 350px; text-align: center; }
+        #save-button { background-color: #f97316; color: #ffffff; border: none; border-radius: 20px; padding: 12px 30px; font-weight: 800; cursor: pointer; }
+        .main-container.summary-active-layout #input-area { width: 100%; }
+        .main-container.summary-active-layout #output-area { display: none; }
     </style>
 </head>
 <body>
-    <h1>✅ 직원별 & 종합 급여 자동 계산기 </h1> 
+    <h1>✅ 직원별 & 종합 급여 자동 계산기</h1> 
 
-    <div class="tabs">
-        <button class="tab-button summary-tab" onclick="showSummary()">종합 요약</button>
-        <button class="tab-button settings-tab" onclick="showSettings()">설정</button>
-        <button class="tab-button" onclick="changeEmployee('이효성')">이효성</button>
-        <button class="tab-button" onclick="changeEmployee('정수연')">정수연</button>
-        <button class="tab-button" onclick="changeEmployee('신준식')">신준식</button>
-        <button class="tab-button" onclick="changeEmployee('박수현')">박수현</button>
-    </div>
+    <div class="tabs" id="main-tabs">
+        </div>
 
     <div class="main-container"> 
         <div id="input-area" class="container">
@@ -280,7 +115,7 @@
 
             <div id="employee-input-view" class="tab-content">
                 <div class="input-header">
-                    <h2>🗓 근태 기록 입력</h2>
+                    <h2 id="input-title">🗓 근태 기록 입력</h2>
                     <select id="year-select" onchange="changeYear()">
                         <option value="2025">2025년</option>
                         <option value="2026">2026년</option>
@@ -289,7 +124,6 @@
                     <select id="month-select" onchange="changeMonth()"></select>
                 </div>
                 <p style="color: red;">* 출근/퇴근 시간을 **HH:MM** 형식으로 입력해주세요. (예: 09:00, 18:30)</p>
-                
                 <table id="time-input-table">
                     <thead>
                         <tr>
@@ -300,8 +134,7 @@
                             <th style="width: 30%;">일별 근무</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
 
@@ -314,9 +147,7 @@
                     </select>
                     <select id="summary-month-select" onchange="changeSummaryMonth()"></select>
                 </div>
-
-                <div class="title-display">근무 대상 월: <span id="summary-month-display">2025년 1월</span></div>
-
+                <div class="title-display" id="summary-month-display" style="font-size: 1.3em; font-weight: 800; color: var(--primary-color); margin-bottom:15px;">2025년 1월</div>
                 <table id="summary-data-table">
                     <thead>
                         <tr>
@@ -326,16 +157,14 @@
                             <th>총 지급 합계</th>
                         </tr>
                     </thead>
-                    <tbody id="summary-table-body">
-                        </tbody>
+                    <tbody id="summary-table-body"></tbody>
                 </table>
             </div>
             
             <div id="settings-input-view" class="tab-content">
-                <div class="input-header">
-                    <h2>⚙️ 연도별 최저시급 설정</h2>
-                </div>
-                <p style="color: red;">* 시급을 입력하시면 분당 금액이 자동 계산됩니다. </p>
+                <div class="input-header"><h2>⚙️ 설정 및 직원 관리</h2></div>
+                
+                <h3>💰 연도별 최저시급 설정</h3>
                 <table id="settings-table">
                     <thead>
                         <tr>
@@ -344,69 +173,61 @@
                             <th style="width: 35%;">분당 금액 (원)</th>
                         </tr>
                     </thead>
-                    <tbody id="settings-table-body">
-                        </tbody>
+                    <tbody id="settings-table-body"></tbody>
                 </table>
-                <p style="font-size: 1.1em; color: #ef4444; font-weight: 700; margin-top: 20px;">
-                    주의: 시급 설정 후에는 반드시 좌측 상단의 '데이터 저장' 버튼을 눌러주셔야 반영됩니다.
-                </p>
+
+                <div class="management-section">
+                    <h3>👥 직원 명단 관리</h3>
+                    <div class="add-staff-group">
+                        <input type="text" id="new-staff-name" placeholder="새 직원 이름 입력">
+                        <button onclick="addEmployee()" style="background-color: var(--primary-color); color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold;">직원 추가</button>
+                    </div>
+                    <div id="staff-admin-list">
+                        </div>
+                </div>
             </div>
-            
-        </div> <div id="output-area" class="container">
-            
+        </div>
+
+        <div id="output-area" class="container">
             <div id="employee-detail-view" class="tab-content">
                 <h2>💰 급여 정보</h2>
-                <div class="employee-info"><span id="current-employee-name">이효성</span> 님의 명세</div>
-                
-                <div class="summary-box">
-                    <div class="summary-row">
-                        <span>근무 대상 월:</span>
-                        <span id="target-month">2025년 1월</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>총 근무 시간:</span>
-                        <span id="total-time">0시간 0분</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>총 출근 일수:</span>
-                        <span id="total-days">0일</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>적용 분당 금액:</span>
-                        <span id="rate-per-min-display">0원</span>
-                    </div>
+                <div class="employee-info" style="font-size: 1.5em; font-weight: 800; color: var(--primary-color); margin-bottom: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom:10px;">
+                    <span id="current-employee-name">이효성</span> 님의 명세
                 </div>
-
-                <table id="detail-pay-table">
+                <div class="summary-box" style="background-color: #f0fdfa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>근무 대상 월:</span><span id="target-month" style="font-weight:900;">-</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>총 근무 시간:</span><span id="total-time" style="font-weight:900; color:var(--primary-color);">-</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>총 출근 일수:</span><span id="total-days" style="font-weight:900; color:var(--primary-color);">-</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>적용 분당 금액:</span><span id="rate-per-min-display" style="font-weight:900; color:var(--primary-color);">-</span></div>
+                </div>
+                <table id="detail-pay-table" style="text-align: right;">
                     <tbody>
-                        <tr><th>급여액</th><td id="pay-amount">0원</td></tr>
-                        <tr><th>식대 (출근일수 x 8,000원)</th><td id="meal-allowance">0원</td></tr>
-                        <tr class="total-pay-row"><th>총 지급 합계</th><td id="total-pay">0원</td></tr>
+                        <tr><th style="text-align:left; background:#f8fafc;">급여액</th><td id="pay-amount" style="font-weight:bold;">0원</td></tr>
+                        <tr><th style="text-align:left; background:#f8fafc;">식대 (출근일수 x 8,000원)</th><td id="meal-allowance" style="font-weight:bold;">0원</td></tr>
+                        <tr style="background-color: #ccfbf1; color: #0f766e; font-weight: 900;"><th style="text-align:left;">총 지급 합계</th><td id="total-pay">0원</td></tr>
                     </tbody>
                 </table>
             </div>
-
             <div id="settings-view" class="tab-content">
-                <p style="font-size: 1.5em; color: var(--header-color); font-weight: 800;">
-                    시급 설정을 위한 영역입니다.
-                </p>
+                <p style="font-size: 1.2em; color: #64748b;">이곳에서 시급과 직원 명단을 관리할 수 있습니다. 변경 후 반드시 '데이터 저장'을 눌러주세요.</p>
             </div>
-        </div> </div> <div id="saveModal" class="modal">
-        <div class="modal-content">
-            <h3>✅ 데이터 저장 완료</h3>
-            <p>직원 근무 기록 및 시급 설정이<br>성공적으로 저장되었습니다.</p>
-            <button class="modal-button" onclick="closeModal()">확인</button>
         </div>
     </div>
 
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <h3>✅ 데이터 저장 완료</h3>
+            <p>직원 데이터가 브라우저에<br>성공적으로 저장되었습니다.</p>
+            <button onclick="closeModal()" style="background:var(--primary-color); color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer;">확인</button>
+        </div>
+    </div>
 
     <script>
-        // 상수 정의
-        const EMPLOYEES = ['이효성', '정수연', '신준식', '박수현'];
+        // --- 전역 변수 및 상수 ---
+        let EMPLOYEES = JSON.parse(localStorage.getItem('payroll_employees')) || ['이효성', '정수연', '신준식', '박수현'];
         const MEAL_ALLOWANCE = 8000;
         const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
         const YEARS = [2025, 2026, 2027];
-        
         const EMPLOYEE_DATA_KEY_PREFIX = 'payrollData_'; 
         const RATES_STORAGE_KEY = 'annualPayRates'; 
 
@@ -417,445 +238,303 @@
         let currentYear = 2025;
         let currentMonth = 1;
 
-        // --- CORE UTILITIES ---
-        function getDaysInMonth(year, month) {
-            return new Date(year, month, 0).getDate();
-        }
-        function calculatePayPerMinute(hourlyWage) {
-            if (!hourlyWage || hourlyWage <= 0) return 0;
-            const rate = hourlyWage / 60;
-            return Math.trunc(rate * 10) / 10; 
+        // --- 초기화 로직 ---
+        function init() {
+            loadAndInitRates();
+            initializeData(currentYear);
+            renderTabs();
+            renderStaffAdmin();
+            createMonthSelect('month-select', currentMonth);
+            createMonthSelect('summary-month-select', currentMonth);
+            showSummary();
         }
 
-        // --- DATA MANAGEMENT ---
-        function loadAndInitRates() {
-            yearlyRates = {};
-            const savedRates = localStorage.getItem(RATES_STORAGE_KEY);
-            const defaultHourly = { 2025: 10030, 2026: 11000, 2027: 12000 }; 
-
-            YEARS.forEach(year => {
-                let hourly = defaultHourly[year] || 0;
-                if (savedRates) {
-                    try {
-                        const parsedRates = JSON.parse(savedRates);
-                        if (parsedRates[year] && parsedRates[year].hourly) {
-                            hourly = parsedRates[year].hourly;
-                        }
-                    } catch (e) { }
-                }
-                yearlyRates[year] = {
-                    hourly: hourly,
-                    payPerMinute: calculatePayPerMinute(hourly)
-                };
+        // 탭 메뉴 동적 생성
+        function renderTabs() {
+            const tabsContainer = document.getElementById('main-tabs');
+            tabsContainer.innerHTML = '';
+            
+            // 공통 탭
+            tabsContainer.innerHTML += `<button class="tab-button summary-tab" id="tab-summary" onclick="showSummary()">종합 요약</button>`;
+            tabsContainer.innerHTML += `<button class="tab-button settings-tab" id="tab-settings" onclick="showSettings()">설정</button>`;
+            
+            // 직원 탭
+            EMPLOYEES.forEach(name => {
+                tabsContainer.innerHTML += `<button class="tab-button" id="tab-${name}" onclick="changeEmployee('${name}')">${name}</button>`;
             });
         }
-        
+
+        // 설정창 내 직원 삭제 리스트 생성
+        function renderStaffAdmin() {
+            const adminList = document.getElementById('staff-admin-list');
+            adminList.innerHTML = '';
+            EMPLOYEES.forEach(name => {
+                adminList.innerHTML += `
+                    <div class="staff-list-item">
+                        <span>${name}</span>
+                        <button class="delete-btn" onclick="deleteEmployee('${name}')">삭제</button>
+                    </div>
+                `;
+            });
+        }
+
+        // 직원 추가
+        function addEmployee() {
+            const input = document.getElementById('new-staff-name');
+            const name = input.value.trim();
+            if (!name) return alert("이름을 입력하세요.");
+            if (EMPLOYEES.includes(name)) return alert("이미 존재하는 이름입니다.");
+            
+            EMPLOYEES.push(name);
+            localStorage.setItem('payroll_employees', JSON.stringify(EMPLOYEES));
+            
+            // 데이터 구조에 신규 직원 추가
+            if (!employeeData[name]) {
+                employeeData[name] = {};
+                calculatedResults[name] = {};
+                for (let m = 1; m <= 12; m++) {
+                    employeeData[name][m] = {};
+                    calculatedResults[name][m] = { totalMinutes: 0, totalDays: 0, totalPay: 0 };
+                }
+            }
+            
+            input.value = '';
+            renderTabs();
+            renderStaffAdmin();
+            alert(`${name} 직원이 추가되었습니다. '데이터 저장'을 눌러 최종 반영하세요.`);
+        }
+
+        // 직원 삭제
+        function deleteEmployee(name) {
+            if (!confirm(`${name} 직원을 삭제하시겠습니까?\n해당 직원의 모든 근무 데이터가 사라집니다.`)) return;
+            
+            EMPLOYEES = EMPLOYEES.filter(e => e !== name);
+            localStorage.setItem('payroll_employees', JSON.stringify(EMPLOYEES));
+            
+            // 데이터 객체에서 삭제
+            delete employeeData[name];
+            delete calculatedResults[name];
+            
+            if (currentEmployee === name) currentEmployee = EMPLOYEES[0] || '';
+            
+            renderTabs();
+            renderStaffAdmin();
+            if (document.getElementById('summary-view-content').classList.contains('active')) {
+                updateSummaryView();
+            }
+        }
+
+        // --- 기존 기능 유지 및 보정 ---
+        function getDaysInMonth(year, month) { return new Date(year, month, 0).getDate(); }
+        function calculatePayPerMinute(hourlyWage) { return Math.trunc((hourlyWage / 60) * 10) / 10; }
+
+        function loadAndInitRates() {
+            const savedRates = localStorage.getItem(RATES_STORAGE_KEY);
+            const defaultHourly = { 2025: 10030, 2026: 11000, 2027: 12000 }; 
+            YEARS.forEach(year => {
+                let hourly = defaultHourly[year];
+                if (savedRates) {
+                    const parsed = JSON.parse(savedRates);
+                    if (parsed[year]) hourly = parsed[year].hourly;
+                }
+                yearlyRates[year] = { hourly: hourly, payPerMinute: calculatePayPerMinute(hourly) };
+            });
+        }
+
         function initializeData(year) {
             employeeData = {};
             calculatedResults = {};
-
-            // 1. 초기 데이터 구조 생성 (GitHub Pages에서 로컬스토리가 비어있어도 구조를 만듦)
             EMPLOYEES.forEach(name => {
                 employeeData[name] = {};
                 calculatedResults[name] = {};
-                for (let month = 1; month <= 12; month++) {
-                    const daysInMonth = getDaysInMonth(year, month);
-                    calculatedResults[name][month] = { totalMinutes: 0, totalDays: 0, totalPay: 0 };
-                    employeeData[name][month] = {};
-                    for (let day = 1; day <= daysInMonth; day++) {
-                        employeeData[name][month][day] = { start: '', end: '' };
+                for (let m = 1; m <= 12; m++) {
+                    const days = getDaysInMonth(year, m);
+                    employeeData[name][m] = {};
+                    calculatedResults[name][m] = { totalMinutes: 0, totalDays: 0, totalPay: 0 };
+                    for (let d = 1; d <= days; d++) {
+                        employeeData[name][m][d] = { start: '', end: '' };
                     }
                 }
             });
 
-            // 2. 로컬 스토리지 데이터 로드 (로컬 환경에서만 동작)
             const savedData = localStorage.getItem(EMPLOYEE_DATA_KEY_PREFIX + year);
             if (savedData) {
-                try {
-                    const parsedData = JSON.parse(savedData);
-                    Object.keys(parsedData).forEach(employee => {
-                        if (employeeData[employee]) {
-                            // Object.assign을 사용하여 기존의 초기화된 구조를 유지하면서 데이터 병합
-                            Object.keys(parsedData[employee]).forEach(month => {
-                                if (employeeData[employee][month]) {
-                                    Object.assign(employeeData[employee][month], parsedData[employee][month]);
-                                }
-                            });
-                        }
-                    });
-                } catch (e) {
-                    console.error(year + "년 데이터 로드 중 오류 발생:", e);
-                }
-            }
-        }
-        
-        // --- MODAL FUNCTIONS ---
-        function openModal() {
-            const modal = document.getElementById('saveModal');
-            modal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('saveModal');
-            modal.style.display = 'none';
-        }
-
-        // --- DATA SAVE FUNCTION (Modified) ---
-        function saveData() {
-            try {
-                // 데이터 저장 자체는 localStorage를 사용하므로 GitHub Pages에서도 작동함 (접속한 브라우저에 저장됨)
-                localStorage.setItem(EMPLOYEE_DATA_KEY_PREFIX + currentYear, JSON.stringify(employeeData));
-                localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify(yearlyRates));
-
-                // 저장 성공 시 모달 창 표시
-                openModal(); 
-
-            } catch (e) {
-                alert("데이터 저장에 실패했습니다. 브라우저 설정(프라이버시 모드)을 확인해주세요.");
-                console.error("데이터 저장 중 오류 발생:", e);
-            }
-        }
-
-        // --- VIEW CONTROL UTILITIES ---
-        function hideAllViews() {
-            // 좌측 뷰
-            document.getElementById('employee-input-view').classList.remove('active');
-            document.getElementById('settings-input-view').classList.remove('active');
-            document.getElementById('summary-view-content').classList.remove('active');
-            
-            // 우측 뷰
-            document.getElementById('employee-detail-view').classList.remove('active');
-            document.getElementById('settings-view').classList.remove('active');
-        }
-
-        // --- DROPDOWN SETUP ---
-        function createMonthSelect(targetSelectId, initialMonth) {
-            const select = document.getElementById(targetSelectId);
-            select.innerHTML = '';
-            for (let month = 1; month <= 12; month++) {
-                const option = document.createElement('option');
-                option.value = month;
-                option.textContent = `${month}월`;
-                select.appendChild(option);
-            }
-            select.value = initialMonth;
-        }
-
-        // --- CALCULATIONS ---
-        function calculatePay(employee, month) {
-            let totalMinutes = 0;
-            let totalDays = 0;
-            const daysInMonth = getDaysInMonth(currentYear, month);
-            const monthData = employeeData[employee][month];
-            
-            const currentRate = yearlyRates[currentYear]?.payPerMinute || 0; 
-            
-            for (let day = 1; day <= daysInMonth; day++) {
-                const startInput = monthData[day]?.start;
-                const endInput = monthData[day]?.end;
-                
-                let dailyMinutes = 0;
-
-                if (startInput && endInput && startInput.match(/^\d{1,2}:\d{2}$/) && endInput.match(/^\d{1,2}:\d{2}$/)) {
-                    
-                    const [startHour, startMinute] = startInput.split(':').map(Number);
-                    const [endHour, endMinute] = endInput.split(':').map(Number);
-
-                    const startTimeInMin = startHour * 60 + startMinute;
-                    const endTimeInMin = endHour * 60 + endMinute;
-
-                    dailyMinutes = endTimeInMin - startTimeInMin;
-
-                    if (dailyMinutes > 0) {
-                        totalMinutes += dailyMinutes;
-                        totalDays++;
-
-                        if (employee === currentEmployee && month === currentMonth && document.getElementById('employee-input-view').classList.contains('active')) {
-                             const hours = Math.floor(dailyMinutes / 60);
-                             const minutes = dailyMinutes % 60;
-                             document.getElementById(`daily-work-${day}`).textContent = `${hours}h ${minutes}m`;
-                        }
-
-                    } else if (employee === currentEmployee && month === currentMonth && document.getElementById('employee-input-view').classList.contains('active')) {
-                         document.getElementById(`daily-work-${day}`).textContent = 'ERROR';
+                const parsed = JSON.parse(savedData);
+                Object.keys(parsed).forEach(name => {
+                    if (employeeData[name]) {
+                        Object.keys(parsed[name]).forEach(m => {
+                            if (employeeData[name][m]) Object.assign(employeeData[name][m], parsed[name][m]);
+                        });
                     }
-                } else if (employee === currentEmployee && month === currentMonth && document.getElementById('employee-input-view').classList.contains('active')) {
-                    document.getElementById(`daily-work-${day}`).textContent = '';
-                }
+                });
             }
-            
-            const payAmount = Math.round(totalMinutes * currentRate);
-            const mealAllowance = totalDays * MEAL_ALLOWANCE;
-            const totalPay = payAmount + mealAllowance;
-
-            calculatedResults[employee][month] = { 
-                totalMinutes: totalMinutes, 
-                totalDays: totalDays, 
-                totalPay: totalPay
-            };
-
-            // 근태 입력 뷰가 활성화된 경우에만 우측 상세 뷰 업데이트
-            if (employee === currentEmployee && month === currentMonth && document.getElementById('employee-input-view').classList.contains('active')) {
-                updateEmployeeDetailView(totalMinutes, totalDays, payAmount, mealAllowance, totalPay, currentRate);
-            }
-            
-            return { totalMinutes, totalDays, totalPay }; // 종합 요약을 위해 결과 반환
         }
 
+        function saveData() {
+            localStorage.setItem(EMPLOYEE_DATA_KEY_PREFIX + currentYear, JSON.stringify(employeeData));
+            localStorage.setItem(RATES_STORAGE_KEY, JSON.stringify(yearlyRates));
+            localStorage.setItem('payroll_employees', JSON.stringify(EMPLOYEES));
+            document.getElementById('saveModal').style.display = 'flex';
+        }
 
-        // --- UI UPDATES ---
-        function updateEmployeeDetailView(totalMinutes, totalDays, payAmount, mealAllowance, totalPay, currentRate) {
-            const totalHours = Math.floor(totalMinutes / 60);
-            const remainingMinutes = totalMinutes % 60;
+        function closeModal() { document.getElementById('saveModal').style.display = 'none'; }
+
+        function createMonthSelect(id, initVal) {
+            const el = document.getElementById(id);
+            el.innerHTML = '';
+            for (let m = 1; m <= 12; m++) {
+                const opt = document.createElement('option');
+                opt.value = m; opt.textContent = m + '월';
+                el.appendChild(opt);
+            }
+            el.value = initVal;
+        }
+
+        function calculatePay(emp, month) {
+            let mins = 0, days = 0;
+            const daysInMonth = getDaysInMonth(currentYear, month);
+            const rate = yearlyRates[currentYear].payPerMinute;
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const data = employeeData[emp][month][d];
+                if (data && data.start && data.end) {
+                    const [sh, sm] = data.start.split(':').map(Number);
+                    const [eh, em] = data.end.split(':').map(Number);
+                    const diff = (eh * 60 + em) - (sh * 60 + sm);
+                    if (diff > 0) {
+                        mins += diff; days++;
+                        if (emp === currentEmployee && month === currentMonth) {
+                            const dailyEl = document.getElementById(`daily-work-${d}`);
+                            if (dailyEl) dailyEl.textContent = `${Math.floor(diff/60)}h ${diff%60}m`;
+                        }
+                    }
+                }
+            }
+            const pay = Math.round(mins * rate);
+            const meal = days * MEAL_ALLOWANCE;
+            calculatedResults[emp][month] = { totalMinutes: mins, totalDays: days, totalPay: pay + meal };
             
-            document.getElementById('target-month').textContent = `${currentYear}년 ${currentMonth}월`;
-            document.getElementById('rate-per-min-display').textContent = `${currentRate.toFixed(1)}원`;
-            document.getElementById('total-time').textContent = `${totalHours}시간 ${remainingMinutes}분`;
-            document.getElementById('total-days').textContent = `${totalDays}일`;
+            if (emp === currentEmployee && month === currentMonth) {
+                updateDetailView(mins, days, pay, meal, rate);
+            }
+        }
 
-            document.getElementById('pay-amount').textContent = `${payAmount.toLocaleString()}원`;
-            document.getElementById('meal-allowance').textContent = `${mealAllowance.toLocaleString()}원`;
-            document.getElementById('total-pay').textContent = `${totalPay.toLocaleString()}원`;
+        function updateDetailView(m, d, p, meal, rate) {
+            document.getElementById('target-month').textContent = `${currentYear}년 ${currentMonth}월`;
+            document.getElementById('total-time').textContent = `${Math.floor(m/60)}시간 ${m%60}분`;
+            document.getElementById('total-days').textContent = d + '일';
+            document.getElementById('rate-per-min-display').textContent = rate.toFixed(1) + '원';
+            document.getElementById('pay-amount').textContent = p.toLocaleString() + '원';
+            document.getElementById('meal-allowance').textContent = meal.toLocaleString() + '원';
+            document.getElementById('total-pay').textContent = (p + meal).toLocaleString() + '원';
         }
 
         function updateCalendar() {
-            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-            const timeInputTableBody = document.getElementById('time-input-table').querySelector('tbody');
-            timeInputTableBody.innerHTML = '';
-
-            const currentMonthData = employeeData[currentEmployee][currentMonth];
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const row = timeInputTableBody.insertRow();
-                const start = currentMonthData[day]?.start || '';
-                const end = currentMonthData[day]?.end || '';
-
-                const date = new Date(currentYear, currentMonth - 1, day);
-                const dayOfWeekIndex = date.getDay();
-                const dayOfWeekText = WEEKDAYS[dayOfWeekIndex];
-                
-                let dayClass = '';
-                if (dayOfWeekIndex === 0) { dayClass = 'sun'; } 
-                else if (dayOfWeekIndex === 6) { dayClass = 'sat'; }
-
-                row.innerHTML = `
-                    <td>${day}일</td>
-                    <td class="day-label ${dayClass}">${dayOfWeekText}</td>
-                    <td><input type="text" data-day="${day}" data-type="start" value="${start}" oninput="handleInputChange(this)"></td>
-                    <td><input type="text" data-day="${day}" data-type="end" value="${end}" oninput="handleInputChange(this)"></td>
-                    <td id="daily-work-${day}" style="font-weight: 500;"></td>
+            const tbody = document.querySelector('#time-input-table tbody');
+            tbody.innerHTML = '';
+            const days = getDaysInMonth(currentYear, currentMonth);
+            for (let d = 1; d <= days; d++) {
+                const date = new Date(currentYear, currentMonth - 1, d);
+                const dayIdx = date.getDay();
+                const dayClass = dayIdx === 0 ? 'sun' : (dayIdx === 6 ? 'sat' : '');
+                const val = employeeData[currentEmployee][currentMonth][d] || {start:'', end:''};
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${d}일</td>
+                        <td class="day-label ${dayClass}">${WEEKDAYS[dayIdx]}</td>
+                        <td><input type="text" value="${val.start}" oninput="handleIn('${d}','start',this.value)"></td>
+                        <td><input type="text" value="${val.end}" oninput="handleIn('${d}','end',this.value)"></td>
+                        <td id="daily-work-${d}"></td>
+                    </tr>
                 `;
             }
-
             calculatePay(currentEmployee, currentMonth);
         }
 
-        function updateSettingsView() {
-            const tableBody = document.getElementById('settings-table-body');
-            tableBody.innerHTML = '';
-            
-            YEARS.forEach(year => {
-                const row = tableBody.insertRow();
-                const data = yearlyRates[year];
-
-                row.innerHTML = `
-                    <td>${year}년</td>
-                    <td><input type="number" data-year="${year}" value="${data.hourly}" oninput="handleRateChange(this)"></td>
-                    <td id="rate-per-min-${year}">${data.payPerMinute.toFixed(1)}원</td>
-                `;
-            });
-        }
-        
-        function updateSummaryView() {
-            const summaryBody = document.getElementById('summary-table-body');
-            summaryBody.innerHTML = '';
-
-            let grandTotalMinutes = 0;
-            let grandTotalDays = 0;
-            let grandTotalPay = 0;
-
-            document.getElementById('summary-month-display').textContent = `${currentYear}년 ${currentMonth}월`;
-
-            EMPLOYEES.forEach(employee => {
-                const result = calculatedResults[employee][currentMonth];
-
-                grandTotalMinutes += result.totalMinutes;
-                grandTotalDays += result.totalDays;
-                grandTotalPay += result.totalPay;
-
-                const row = summaryBody.insertRow();
-                
-                const totalHours = Math.floor(result.totalMinutes / 60);
-                const remainingMinutes = result.totalMinutes % 60;
-
-                row.innerHTML = `
-                    <td>${employee}</td>
-                    <td>${totalHours}시간 ${remainingMinutes}분</td>
-                    <td>${result.totalDays}일</td>
-                    <td>${result.totalPay.toLocaleString()}원</td>
-                `;
-            });
-            
-            const totalRow = summaryBody.insertRow();
-            totalRow.innerHTML = `
-                <td>총 합계</td>
-                <td>${Math.floor(grandTotalMinutes / 60)}시간 ${grandTotalMinutes % 60}분</td>
-                <td>${grandTotalDays}일</td>
-                <td>${grandTotalPay.toLocaleString()}원</td>
-            `;
-        }
-
-
-        // --- HANDLERS ---
-        function handleInputChange(inputElement) {
-            const day = Number(inputElement.getAttribute('data-day'));
-            const type = inputElement.getAttribute('data-type');
-            
-            // 입력값 저장
-            employeeData[currentEmployee][currentMonth][day][type] = inputElement.value;
-
-            // 급여 재계산 및 업데이트
+        function handleIn(d, type, val) {
+            employeeData[currentEmployee][currentMonth][d][type] = val;
             calculatePay(currentEmployee, currentMonth);
         }
 
-        function handleRateChange(inputElement) {
-            const year = Number(inputElement.getAttribute('data-year'));
-            const newHourly = Number(inputElement.value);
-
-            const newRatePerMin = calculatePayPerMinute(newHourly);
-            yearlyRates[year] = {
-                hourly: newHourly,
-                payPerMinute: newRatePerMin
-            };
-
-            document.getElementById(`rate-per-min-${year}`).textContent = `${newRatePerMin.toFixed(1)}원`;
-
-            if (year === currentYear) {
-                // 시급이 변경되면 모든 직원의 급여를 다시 계산
-                EMPLOYEES.forEach(employee => calculatePay(employee, currentMonth));
-                // 종합 요약 뷰가 활성화되어 있다면 업데이트
-                if (document.getElementById('summary-view-content').classList.contains('active')) {
-                    updateSummaryView();
-                }
-            }
+        function handleRateChange(yr, val) {
+            const v = Number(val);
+            yearlyRates[yr] = { hourly: v, payPerMinute: calculatePayPerMinute(v) };
+            document.getElementById(`rate-per-min-${yr}`).textContent = yearlyRates[yr].payPerMinute.toFixed(1) + '원';
         }
 
-
-        // --- TAB & DROPDOWN CONTROLLERS ---
-        
-        function changeYear() {
-            const newYear = Number(document.getElementById('year-select').value);
-            
-            if (newYear !== currentYear) {
-                currentYear = newYear;
-                initializeData(currentYear);
-                updateCalendar();
-            }
-        }
-
-        function changeMonth() {
-            currentMonth = Number(document.getElementById('month-select').value);
-            updateCalendar();
-        }
-
-        function changeSummaryYear() {
-            currentYear = Number(document.getElementById('summary-year-select').value);
-            initializeData(currentYear); 
-            // 데이터 로드 후 모든 직원의 급여를 계산하여 calculatedResults를 업데이트
-            EMPLOYEES.forEach(employee => calculatePay(employee, currentMonth));
-            updateSummaryView();
-        }
-
-        function changeSummaryMonth() {
-            currentMonth = Number(document.getElementById('summary-month-select').value);
-            // 월이 변경되면 모든 직원의 급여를 계산
-            EMPLOYEES.forEach(employee => calculatePay(employee, currentMonth));
-            updateSummaryView();
-        }
-
-
-        // 직원 탭 변경
-        function changeEmployee(employeeName) {
-            currentEmployee = employeeName;
-            
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.tab-button[onclick="changeEmployee('${employeeName}')"]`).classList.add('active');
-
-            hideAllViews();
-            
-            // ⭐ 1. 추가: 종합 요약 레이아웃 클래스 제거 (기본 2단 레이아웃 복원)
+        // --- 탭 제어 ---
+        function hideAll() {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
             document.querySelector('.main-container').classList.remove('summary-active-layout');
-            
-            // 좌측: 근태 입력 폼 (input-view)
-            document.getElementById('employee-input-view').classList.add('active'); 
-            // 우측: 명세표 (detail-view)
-            document.getElementById('employee-detail-view').classList.add('active'); 
-
-            // 드롭다운 동기화
-            document.getElementById('year-select').value = currentYear;
-            document.getElementById('month-select').value = currentMonth;
-            
-            document.getElementById('current-employee-name').textContent = employeeName;
-            updateCalendar();
         }
 
-        // 설정 탭 표시
-        function showSettings() {
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.tab-button[onclick="showSettings()"]`).classList.add('active');
-
-            hideAllViews();
-            
-            // ⭐ 2. 추가: 종합 요약 레이아웃 클래스 제거 (기본 2단 레이아웃 복원)
-            document.querySelector('.main-container').classList.remove('summary-active-layout');
-            
-            // 좌측: 설정 입력 폼 (settings-input-view)
-            document.getElementById('settings-input-view').classList.add('active'); 
-            // 우측: 설정 뷰 (settings-view)
-            document.getElementById('settings-view').classList.add('active');
-
-            updateSettingsView();
-        }
-        
-        // 종합 요약 탭 표시
         function showSummary() {
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-            document.querySelector('.summary-tab').classList.add('active');
-
-            hideAllViews();
-            
-            // ⭐ 3. 추가: 종합 요약 레이아웃 클래스 추가 (전체 폭 레이아웃 적용)
-            document.querySelector('.main-container').classList.add('summary-active-layout'); 
-            
-            // 좌측: 종합 요약 테이블 (summary-view-content)
-            document.getElementById('summary-view-content').classList.add('active'); 
-            // 우측: 비활성화 유지
-
-            // 드롭다운 동기화 및 강제 재계산
-            document.getElementById('summary-year-select').value = currentYear;
-            document.getElementById('summary-month-select').value = currentMonth;
-            
-            // 표시 전에 모든 직원 데이터를 계산
-            EMPLOYEES.forEach(employee => calculatePay(employee, currentMonth));
+            hideAll();
+            document.getElementById('tab-summary').classList.add('active');
+            document.getElementById('summary-view-content').classList.add('active');
+            document.querySelector('.main-container').classList.add('summary-active-layout');
+            EMPLOYEES.forEach(e => calculatePay(e, currentMonth));
             updateSummaryView();
         }
 
-
-        // --- INITIALIZATION ---
-        window.onload = function() {
-            loadAndInitRates();
-            initializeData(currentYear);
-
-            // 초기 드롭다운 설정
-            document.getElementById('year-select').value = currentYear; 
-            document.getElementById('summary-year-select').value = currentYear; 
+        function updateSummaryView() {
+            const body = document.getElementById('summary-table-body');
+            body.innerHTML = '';
+            let tM = 0, tD = 0, tP = 0;
+            document.getElementById('summary-month-display').textContent = `${currentYear}년 ${currentMonth}월`;
             
-            createMonthSelect('month-select', currentMonth);
-            createMonthSelect('summary-month-select', currentMonth);
+            EMPLOYEES.forEach(e => {
+                const r = calculatedResults[e][currentMonth];
+                tM += r.totalMinutes; tD += r.totalDays; tP += r.totalPay;
+                body.innerHTML += `
+                    <tr>
+                        <td>${e}</td>
+                        <td>${Math.floor(r.totalMinutes/60)}시간 ${r.totalMinutes%60}분</td>
+                        <td>${r.totalDays}일</td>
+                        <td>${r.totalPay.toLocaleString()}원</td>
+                    </tr>
+                `;
+            });
+            body.innerHTML += `<tr><td>총 합계</td><td>${Math.floor(tM/60)}시간 ${tM%60}분</td><td>${tD}일</td><td>${tP.toLocaleString()}원</td></tr>`;
+        }
 
-            // 초기 뷰 설정을 종합 요약으로 변경
-            showSummary(); 
-        };
+        function showSettings() {
+            hideAll();
+            document.getElementById('tab-settings').classList.add('active');
+            document.getElementById('settings-input-view').classList.add('active');
+            document.getElementById('settings-view').classList.add('active');
+            
+            const sBody = document.getElementById('settings-table-body');
+            sBody.innerHTML = '';
+            YEARS.forEach(y => {
+                sBody.innerHTML += `
+                    <tr>
+                        <td>${y}년</td>
+                        <td><input type="number" value="${yearlyRates[y].hourly}" oninput="handleRateChange(${y}, this.value)"></td>
+                        <td id="rate-per-min-${y}">${yearlyRates[y].payPerMinute.toFixed(1)}원</td>
+                    </tr>
+                `;
+            });
+            renderStaffAdmin();
+        }
+
+        function changeEmployee(name) {
+            hideAll();
+            currentEmployee = name;
+            document.getElementById(`tab-${name}`).classList.add('active');
+            document.getElementById('employee-input-view').classList.add('active');
+            document.getElementById('employee-detail-view').classList.add('active');
+            document.getElementById('current-employee-name').textContent = name;
+            updateCalendar();
+        }
+
+        function changeYear() { currentYear = Number(document.getElementById('year-select').value); initializeData(currentYear); updateCalendar(); }
+        function changeMonth() { currentMonth = Number(document.getElementById('month-select').value); updateCalendar(); }
+        function changeSummaryYear() { currentYear = Number(document.getElementById('summary-year-select').value); initializeData(currentYear); showSummary(); }
+        function changeSummaryMonth() { currentMonth = Number(document.getElementById('summary-month-select').value); showSummary(); }
+
+        window.onload = init;
     </script>
 </body>
 </html>
